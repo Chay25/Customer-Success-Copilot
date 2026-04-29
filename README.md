@@ -1,4 +1,4 @@
-
+# <img src="logo.png" width="35"/> Customer Success Copilot
 # AI Customer Success Copilot
 
 A practical customer-support analysis tool built with Python and FastAPI. The app reads a customer message, identifies the likely issue, estimates churn risk, and suggests a useful next step for a support or customer-success team.
