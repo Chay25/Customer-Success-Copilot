@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>AI Customer Success Copilot</title>
+  <style>
+    body { font-family: Arial, sans-serif; margin: 0; background: #f6f7fb; color: #1f2937; }
+    .container { max-width: 900px; margin: 40px auto; padding: 24px; }
+    .card { background: white; border-radius: 18px; padding: 24px; box-shadow: 0 8px 25px rgba(0,0,0,.08); }
+    textarea { width: 100%; height: 130px; padding: 14px; border-radius: 12px; border: 1px solid #d1d5db; font-size: 16px; }
+    button { margin-top: 16px; padding: 12px 18px; border: 0; border-radius: 12px; cursor: pointer; font-weight: 700; }
+    .result { margin-top: 20px; display: grid; gap: 12px; }
+    .pill { display: inline-block; padding: 8px 12px; background: #eef2ff; border-radius: 999px; margin-right: 8px; }
+    pre { background: #111827; color: #f9fafb; padding: 16px; border-radius: 12px; overflow: auto; }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <div class="card">
+      <h1>AI Customer Success Copilot</h1>
+      <p>Analyze customer messages for sentiment, intent, urgency, churn risk, upsell opportunity, and suggested response.</p>
+      <textarea id="message">I am frustrated because my issue has not been fixed and support is taking too long.</textarea>
+      <button onclick="analyze()">Analyze Message</button>
+      <div id="output" class="result"></div>
+    </div>
+  </div>
+  <script>
+    async function analyze() {
+      const message = document.getElementById('message').value;
+      const output = document.getElementById('output');
+      output.innerHTML = 'Analyzing...';
+      try {
+        const res = await fetch('http://127.0.0.1:8000/analyze', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ customer_id: 'DEMO-001', message: message })
+        });
+        const data = await res.json();
+        output.innerHTML = `
+          <div><span class="pill">Sentiment: ${data.sentiment}</span><span class="pill">Intent: ${data.intent}</span><span class="pill">Urgency: ${data.urgency}</span></div>
+          <div><strong>Churn Risk:</strong> ${data.churn_risk_score}%</div>
+          <div><strong>Suggested Action:</strong> ${data.recommended_action}</div>
+          <div><strong>Suggested Reply:</strong> ${data.suggested_reply}</div>
+          <pre>${JSON.stringify(data, null, 2)}</pre>`;
+      } catch (e) {
+        output.innerHTML = 'Start FastAPI first: uvicorn app.main:app --reload';
+      }
+    }
+  </script>
+</body>
+</html>
